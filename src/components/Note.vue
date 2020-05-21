@@ -1,9 +1,6 @@
 <template>
-  <!-- <div id="Note">
-    <div class="a" @click="onAdd"> Add note: </div>
-    <div v-for="item in lists" :key="item.id" @click="onEdit(item)">{{item.title}}</div>
-  </div> -->
   <div id="note">
+    <h1>Note</h1>
     <div class="note-box" @click="onAdd">
       <div class="container">
           <div class="icon">
@@ -11,6 +8,7 @@
           </div>
       </div>
     </div>
+
     <div class="status">
       <div>
         <span>{{noteLeft}} notes left</span>
@@ -19,27 +17,34 @@
         <span class="btn-edit" :class="{'is-edit': isEdit}" @click="toggleClick">Edit</span>
       </div>
     </div>
+
     <div class="note-box" v-for="item in lists" :key="item.id">
+      <div class="highlight" :class="{'isDanger': item.isImportant}"></div>
       <div class="container">
           <div id="note-item">
+
             <div class="checkbox-wrapper">
               <label class="checkbox-label">
                 <input type="checkbox"/>
                 <span class="checkbox"></span>
               </label>
             </div>
+
             <div class="date-wrapper">
               <p> day </p>
               <span>month year</span>
             </div>
+
             <div class="detail-wrapper">
               <p> title </p>
               <span class="description"> description </span>
             </div>
+
             <div class="action-wrapper">
               <font-awesome-icon icon="trash-alt"  @click="iconDelete(item.id)" v-if="!isEdit" />
               <font-awesome-icon icon="pencil-alt"  @click="iconEdit" v-else />
             </div>
+
           </div>
       </div>
     </div>
@@ -52,7 +57,6 @@ export default {
   name: 'Note',
   data() {
     return {
-      msg: "Welcome to Your Vue.js App",
       lists: [],
       title: "",
       isEdit: false,
@@ -60,6 +64,8 @@ export default {
   },
   created() {
       this.lists = JSON.parse(sessionStorage.getItem('listNotes')) || [];
+      console.log(this.lists, 'list');
+      
   },
   methods: {
       onAdd: function() {
@@ -99,8 +105,9 @@ export default {
   min-width: 769px;
   margin: auto;
 }
+
 #note h1 {
-  font-size: 36px;
+  font-size: 32pt;
   color: #424141;
   font-weight: normal;
   font-stretch: normal;
@@ -108,10 +115,48 @@ export default {
   line-height: normal;
   letter-spacing: normal;
 }
+
 .note-box {
+  width: 520px;
+  background: #ffffff;
+  box-shadow: 0 2px 7px 0 #e8e8e8;
+  min-height: 80px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
   margin: auto;
   margin-bottom: 10px;
 }
+
+.container {
+  padding: 9px 24px 9px 30px;
+  width: 100%;
+}
+
+.icon {
+  line-height: 62px;
+  margin-right: 12px;
+  color: #808080;
+  text-align: left;
+  cursor: pointer;
+}
+
+.add-note {
+  border: none;
+  width: 100%;
+  height: 62px;
+  font-size: 1.5rem;
+  color: #808080;
+}
+
+/*
+▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△
+|style ของขั้นตอนการสร้างหน้าขึ้นมาใหม่และ style ของปุ่มเพิ่ม Add Note
+|copy ตั้งแต่ 150 ขึ้นไป จนถึง 103
+
+*/
+
+
 .status {
   display: flex;
   width: 520px;
@@ -128,36 +173,12 @@ export default {
   color: #424141;
 }
 
+/*
+▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△
+|style ของขั้นตอนการสร้าง แถบบอกว่า done ไปกี่ list และ ปุ่มเปลี่ยน status edit เป็น delete
+|copy ตั้งแต่ 174 ขึ้นไป จนถึง 160
 
-
-#add-note {
-  display: flex;
-}
-.icon {
-  line-height: 62px;
-  margin-right: 12px;
-  color: #808080;
-  text-align: left;
-  cursor: pointer;
-}
-.add-note {
-  border: none;
-  width: 100%;
-  height: 62px;
-  font-size: 1.5rem;
-  color: #808080;
-}
-
-.note-box {
-  width: 520px;
-  /* padding: 24px 40px; */
-  background: #ffffff;
-  box-shadow: 0 2px 7px 0 #e8e8e8;
-  min-height: 80px;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: row;
-}
+*/
 
 .highlight {
   background-color: #ffffff;
@@ -165,10 +186,7 @@ export default {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
-.container {
-  padding: 9px 24px 9px 30px;
-  width: 100%;
-}
+
 .highlight.isDanger {
   background-color: #ffb0b3;
 }
@@ -179,6 +197,15 @@ export default {
 #note-item > * {
   min-height: 60px;
 }
+
+/*
+▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△
+|style ของขั้นตอนการสร้าง แถบสีแดงของ note-item ว่า type ของ note-item เป็น important ไหม
+|copy ตั้งแต่ 199 ขึ้นไป จนถึง 183
+
+*/
+
+
 .checkbox-wrapper {
   position: relative;
   flex-basis: 40px;
@@ -264,4 +291,11 @@ input[type="checkbox"] {
   font-size: 18px;
   color: #808080;
 }
+
+/*
+▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△▲△
+|style ของขั้นตอนการสร้าง checkbox และจัดระเบียบของ note-item พร้อมกับ style ของการขีดฆ่า font
+|copy ตั้งแต่ บรรทัด 293 ขึ้นไป จนถึง 209
+
+*/
 </style>
