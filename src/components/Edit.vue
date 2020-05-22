@@ -3,7 +3,7 @@
        <h1>Note</h1>
         <div class="container">
             <p>Title</p>
-            <input class="input-control" v-model="title" />
+            <input class="input-control" id="title" v-model="title" />
             <!-- <p class="is-danger" v-if="isTitleRequired">requied</p> -->
             <div class="type-wrapper">
             <p>Type</p>
@@ -17,16 +17,17 @@
             </label>
             </div>
             <p>Description</p>
-            <textarea class="textarea-control" v-model="description"></textarea>
+            <textarea class="textarea-control" id="description" v-model="description"></textarea>
             <div class="action">
-            <button type="button" class="btn" @click="goBack">Cancel</button>
-            <button type="button" class="btn btn-save" @click="onSubmit">Save</button>
+            <button type="button" id="btn-back" class="btn" @click="goBack">Cancel</button>
+            <button type="button" id="btn-save" class="btn btn-save" @click="onSubmit">Save</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import NoteService  from '@/services/note.service';
 export default {
     name: 'Edit',
       data: function() {
@@ -36,18 +37,19 @@ export default {
       title: "",
       description: "",
       isImportant: false,
-      date: Date,
+      date: String,
       isDone: Boolean
     //   isTitleRequired: false,
     };
   },
   created() {
     this.id = this.$route.params.id;
-    const list  = JSON.parse(sessionStorage.getItem('listNotes')) || [];
-    const data = list.find(r => r.id == this.id);
-    if (data) {
-      this.initData(data);
+    if (this.id) {
+      NoteService.getNote(this.id).then(r => {
+      if (r) this.initData(r);
+    });
     }
+    
   },
    methods: {
     initData: function(data) {
@@ -60,47 +62,23 @@ export default {
       this.$router.push({path: `/`});
     },
     onSubmit: function() {
-        
-    //   if (this.isTitleRequired) {
-    //     return;
-    //   }
-    let list  = JSON.parse(sessionStorage.getItem('listNotes')) || [];
-
-    if(this.id){
       const data = {
-        id: this.id,
-        title: this.title,
-        description: this.description,
-        isImportant: this.isImportant,
-        date: new Date(),
-        isDone: this.isDone
-      };
-      list = list.map(r => {
-        
-        if(r.id == this.id) {
-          r = data;
-        }
-        return r;
-      });
-      
-    } else {
-      const data = {
-        id: list.length,
-        title: this.title,
-        description: this.description,
-        isImportant: this.isImportant,
-        date: new Date(),
-        isDone: false
-      };
-      list.push(data);
-    }
+            title: this.title,
+            description: this.description,
+            isImportant: this.isImportant,
+            isDone: this.isDone
+          };
 
-    sessionStorage.setItem('listNotes', JSON.stringify(list))
-    this.$router.push({path: `/`});
-    //   NoteService.updateNote(this.id, data).then((response) => {
-    //     this.initData(response);
-    //   })
-    //   e.preventDefault();
+      if(this.id){
+          NoteService.updateNote(this.id, data).then(() => {
+            this.$router.push({path: `/`});
+        })
+      } else {
+        NoteService.addNote(data).then(() => {
+          this.$router.push({path: `/`});
+        });
+      }
+
     }
   },
 }

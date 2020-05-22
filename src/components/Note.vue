@@ -3,7 +3,7 @@
     <h1>Note</h1>
     <div class="note-box" @click="onAdd">
       <div class="container">
-          <div class="icon">
+          <div class="icon" id="add-note">
             <font-awesome-icon icon="plus"/>  <span class="add-note">  Add Note </span>
           </div>
       </div>
@@ -19,14 +19,14 @@
     </div>
 
     <div class="note-box" v-for="(item, index) in lists" :key="item.id">
-      <div class="highlight" :class="{'isDanger': item.isImportant}"></div>
+      <div class="highlight" :id="'highlight-' + index" :class="{'isDanger': item.isImportant}"></div>
       <div class="container">
           <div id="note-item">
 
             <div class="checkbox-wrapper">
               <label class="checkbox-label">
-                <input type="checkbox" :checked="item.isDone" @click="isChecked(item, $event.target.checked)"/>
-                <span class="checkbox"></span>
+                <input type="checkbox" :checked="item.isDone" @click="changeIsDone(item, $event.target.checked)"/>
+                <span class="checkbox" :id="'isDone-' + index"></span>
               </label>
             </div>
 
@@ -41,7 +41,7 @@
             </div>
 
             <div class="action-wrapper">
-              <font-awesome-icon :id="'trash-'  + index" icon="trash-alt"  @click="iconDelete(item.id)" v-if="!isEdit" />
+              <font-awesome-icon :id="'trash-'  + index" icon="trash-alt"  @click="onDelete(item.id)" v-if="!isEdit" />
               <font-awesome-icon :id="'pancil-' + index" icon="pencil-alt"  @click="onEdit(item)" v-else />
             </div>
 
@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import NoteService  from '@/services/note.service';
+
 export default {
   name: 'Note',
   data() {
@@ -62,9 +64,7 @@ export default {
     };
   },
   created() {
-      this.lists = JSON.parse(sessionStorage.getItem('listNotes')) || [];
-      console.log(this.lists, 'list');
-      
+    this.getNotes();
   },
   methods: {
       onAdd: function() {
@@ -77,37 +77,34 @@ export default {
     toggleClick: function() {
       this.isEdit = !this.isEdit;
     },
-    iconDelete: function(id) {
-      this.lists = this.lists.filter(r => r.id != id);
-      if(this.lists.length == 0) {
-        sessionStorage.removeItem('listNotes');
-      } else {
-        sessionStorage.setItem('listNotes', JSON.stringify(this.lists));
-      }
+    onDelete: function(id) {
+      NoteService.deleteNote(id).then(() => {
+        this.getNotes();
+      });
     },
      day: function(e) {
-      return new Date(e).getDay()
+      return e.split('/')[0];
     },
     month: function(e) {
-      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(e).getMonth() - 1]
+      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][e.split('/')[1] - 1]
     },
     year: function(e) {
-      return new Date(e).getFullYear();
+      return e.split('/')[2];
     },
-    isChecked: function(item, isDone) {
-      item.isDone = isDone;
-      const list = this.lists.map(r => {
-        if(r.id == item.id) {
-          r = item;
-        }
-        return r;
+    changeIsDone: function(item, isDone) {
+      NoteService.changeIsDone(item.id, isDone).then(() => {
+        this.getNotes();
       });
-      sessionStorage.setItem('listNotes', JSON.stringify(list))
+    },
+    getNotes: function() {
+      NoteService.getNotes().then(r => {
+        this.lists = r;
+      })
     }
   },
   computed: {
     noteLeft: function() {
-      return this.lists.filter((note) => note.isDone).length;
+      return this.lists.filter((note) => !note.isDone).length;
     },
    
   }
