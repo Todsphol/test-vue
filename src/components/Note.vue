@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div class="note-box" v-for="item in lists" :key="item.id">
+    <div class="note-box" v-for="(item, index) in lists" :key="item.id">
       <div class="highlight" :class="{'isDanger': item.isImportant}"></div>
       <div class="container">
           <div id="note-item">
@@ -41,8 +41,8 @@
             </div>
 
             <div class="action-wrapper">
-              <font-awesome-icon icon="trash-alt"  @click="iconDelete(item.id)" v-if="!isEdit" />
-              <font-awesome-icon icon="pencil-alt"  @click="onEdit(item)" v-else />
+              <font-awesome-icon :id="'trash-'  + index" icon="trash-alt"  @click="iconDelete(item.id)" v-if="!isEdit" />
+              <font-awesome-icon :id="'pancil-' + index" icon="pencil-alt"  @click="onEdit(item)" v-else />
             </div>
 
           </div>
