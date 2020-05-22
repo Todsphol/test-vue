@@ -25,24 +25,24 @@
 
             <div class="checkbox-wrapper">
               <label class="checkbox-label">
-                <input type="checkbox"/>
+                <input type="checkbox" :checked="item.isDone" @click="isChecked(item, $event.target.checked)"/>
                 <span class="checkbox"></span>
               </label>
             </div>
 
             <div class="date-wrapper">
-              <p> day </p>
-              <span>month year</span>
+              <p> {{ day(item.date)}} </p>
+              <span>{{month(item.date)}} {{year(item.date)}}</span>
             </div>
 
             <div class="detail-wrapper">
-              <p> title </p>
-              <span class="description"> description </span>
+              <p :class="{ 'is-done': item.isDone }"> {{item.title}} </p>
+              <span class="description"> {{item.description}} </span>
             </div>
 
             <div class="action-wrapper">
               <font-awesome-icon icon="trash-alt"  @click="iconDelete(item.id)" v-if="!isEdit" />
-              <font-awesome-icon icon="pencil-alt"  @click="iconEdit" v-else />
+              <font-awesome-icon icon="pencil-alt"  @click="onEdit(item)" v-else />
             </div>
 
           </div>
@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import router from '@/router';
 export default {
   name: 'Note',
   data() {
@@ -86,14 +85,31 @@ export default {
         sessionStorage.setItem('listNotes', JSON.stringify(this.lists));
       }
     },
-    iconEdit: function () {
-      router.push({ path: `/edit/${this.id}`});
+     day: function(e) {
+      return new Date(e).getDay()
+    },
+    month: function(e) {
+      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(e).getMonth() - 1]
+    },
+    year: function(e) {
+      return new Date(e).getFullYear();
+    },
+    isChecked: function(item, isDone) {
+      item.isDone = isDone;
+      const list = this.lists.map(r => {
+        if(r.id == item.id) {
+          r = item;
+        }
+        return r;
+      });
+      sessionStorage.setItem('listNotes', JSON.stringify(list))
     }
   },
   computed: {
     noteLeft: function() {
       return this.lists.filter((note) => note.isDone).length;
-    }
+    },
+   
   }
 }
 </script>
