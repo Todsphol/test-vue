@@ -63,7 +63,6 @@ export default {
   },
   created() {
       this.lists = JSON.parse(sessionStorage.getItem('listNotes')) || [];
-      console.log(this.lists, 'list');
       
   },
   methods: {
@@ -71,6 +70,8 @@ export default {
           this.$router.push({ path: `/add`});
       },
     onEdit: function (item) {
+      console.log(item, 'item');
+      
         this.$router.push({ path: `/edit/${item.id}`});
       // router.push({ path: `/edit/${this.id}`});
     },
@@ -89,7 +90,7 @@ export default {
       return new Date(e).getDay()
     },
     month: function(e) {
-      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(e).getMonth() - 1]
+      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(e).getMonth()]
     },
     year: function(e) {
       return new Date(e).getFullYear();
