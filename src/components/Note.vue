@@ -70,10 +70,7 @@ export default {
           this.$router.push({ path: `/add`});
       },
     onEdit: function (item) {
-      console.log(item, 'item');
-      
         this.$router.push({ path: `/edit/${item.id}`});
-      // router.push({ path: `/edit/${this.id}`});
     },
     toggleClick: function() {
       this.isEdit = !this.isEdit;
