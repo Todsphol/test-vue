@@ -83,13 +83,13 @@ export default {
       });
     },
      day: function(e) {
-      return e.split('/')[0];
+      return new Date(e).getDate();
     },
     month: function(e) {
-      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][e.split('/')[1] - 1]
+      return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(e).getMonth()]
     },
     year: function(e) {
-      return e.split('/')[2];
+      return new Date(e).getFullYear();
     },
     changeIsDone: function(item, isDone) {
       NoteService.changeIsDone(item.id, isDone).then(() => {
