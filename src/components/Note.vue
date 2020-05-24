@@ -25,7 +25,7 @@
 
             <div class="checkbox-wrapper">
               <label class="checkbox-label">
-                <input type="checkbox" :checked="item.isDone" @click="isChecked(item, $event.target.checked)"/>
+                <input type="checkbox" :checked="item.isDone" @click="checkTheBox(item, $event.target.checked)"/>
                 <span class="checkbox"></span>
               </label>
             </div>
@@ -92,7 +92,7 @@ export default {
     year: function(e) {
       return new Date(e).getFullYear();
     },
-    isChecked: function(item, isDone) {
+    checkTheBox: function(item, isDone) {
       item.isDone = isDone;
       const list = this.lists.map(r => {
         if(r.id == item.id) {
