@@ -84,7 +84,7 @@ export default {
       }
     },
      day: function(e) {
-      return new Date(e).getDay()
+      return new Date(e).getDate();
     },
     month: function(e) {
       return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(e).getMonth()]
